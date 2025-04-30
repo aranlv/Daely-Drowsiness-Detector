@@ -4,28 +4,20 @@ import pandas as pd
 from datetime import datetime, timedelta
 import firebase_admin
 from firebase_admin import credentials, db
+from dotenv import load_dotenv
 from PIL import Image
 import base64
 import io
 import calendar
+import os
 
 st.set_page_config(page_title="Drowsiness Detection Dashboard")
 
 if not firebase_admin._apps:
-    firebase_config = {
-        "type": st.secrets["firebase"]["type"],
-        "project_id": st.secrets["firebase"]["project_id"],
-        "private_key_id": st.secrets["firebase"]["private_key_id"],
-        "private_key": st.secrets["firebase"]["private_key"].replace("\\n", "\n"),
-        "client_email": st.secrets["firebase"]["client_email"],
-        "client_id": st.secrets["firebase"]["client_id"],
-        "auth_uri": st.secrets["firebase"]["auth_uri"],
-        "token_uri": st.secrets["firebase"]["token_uri"],
-        "auth_provider_x509_cert_url": st.secrets["firebase"]["auth_provider_x509_cert_url"],
-        "client_x509_cert_url": st.secrets["firebase"]["client_x509_cert_url"]
-    }
-    cred = credentials.Certificate(firebase_config)
-    firebase_admin.initialize_app(cred, {'databaseURL': st.secrets["firebase"]["database_url"]})
+    load_dotenv()
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    cred = credentials.Certificate('credentials.json')
+    firebase_admin.initialize_app(cred, DATABASE_URL)
 
 ref = db.reference('/')
 
